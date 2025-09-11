@@ -2,7 +2,7 @@
 FROM golang:1.24 AS builder
 
 ENV BIN_FILE=/opt/sputnik/sputnik-app
-ENV CODE_DIR=/go/src/
+ENV CODE_DIR=/go/src
 
 WORKDIR ${CODE_DIR}
 
@@ -14,8 +14,6 @@ RUN go mod download
 ENV CGO_ENABLED=0 \
     GOOS=linux
 
-WORKDIR /go/src
-
 COPY . ${CODE_DIR}
 
 # Собираем статический бинарник Go (без зависимостей на Си API),
@@ -23,7 +21,7 @@ COPY . ${CODE_DIR}
 ARG LDFLAGS
 RUN go build \
     -ldflags "$LDFLAGS" \
-    -o ${BIN_FILE} cmd/app/*
+    -o ${BIN_FILE} ./cmd/app
 
 # На выходе тонкий образ
 FROM alpine:3.9

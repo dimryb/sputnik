@@ -55,8 +55,7 @@ build-service:
 build-sputnik-img:
 	$(MAKE) build-service \
 		DOCKER_IMG=sputnik:develop \
-		DOCKERFILE_PATH=build/Dockerfile
-
+		DOCKERFILE_PATH=Dockerfile
 
 .PHONY: run-docker
 run-docker:
@@ -64,17 +63,17 @@ run-docker:
 		-v $(shell pwd)/configs:/etc/sputnik \
 		sputnik:develop /opt/sputnik/sputnik-app -config /etc/sputnik/config.yaml
 
-.PHONY: build-ghcr
+.PHONY: build-sputnik
 build-sputnik:
 	$(MAKE) build-service \
 		DOCKER_IMG=ghcr.io/dimryb/sputnik:latest \
-		DOCKERFILE_PATH=build/Dockerfile
+		DOCKERFILE_PATH=Dockerfile
 
-.PHONY: push-ghcr
-push-sputnik: build-ghcr
+.PHONY: push-sputnik
+push-sputnik: build-sputnik
 	docker push ghcr.io/dimryb/sputnik:latest
 
-.PHONY: run-ghcr
+.PHONY: run-sputnik
 run-sputnik:
 	docker run --rm \
 		-v $(shell pwd)/configs:/etc/sputnik \
