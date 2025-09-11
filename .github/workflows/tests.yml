@@ -5,6 +5,10 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   GO111MODULE: "on"
 
