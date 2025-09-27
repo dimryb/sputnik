@@ -41,7 +41,14 @@ func main() {
 
 	logg := logger.New(cfg.Log.Level)
 	application := app.NewApp(ctx, logg)
-	sputnikService := service.NewSputnikService(application, logg, service.SputnikConfig{})
+	sputnikService := service.NewSputnikService(application, logg, service.SputnikConfig{
+		Host:              cfg.HTTP.Host,
+		Port:              cfg.HTTP.Port,
+		ReadTimeout:       cfg.HTTP.ReadTimeout,
+		WriteTimeout:      cfg.HTTP.WriteTimeout,
+		IdleTimeout:       cfg.HTTP.IdleTimeout,
+		ReadHeaderTimeout: cfg.HTTP.ReadHeaderTimeout,
+	})
 
 	if err = sputnikService.Run(ctx); err != nil {
 		logg.Errorf("Sputnik service stopped with error: %v", err)
