@@ -27,7 +27,7 @@ type ServerConfig struct {
 	ReadHeaderTimeout time.Duration
 }
 
-func NewServer(app i.Application, logger i.Logger, cfg ServerConfig, handlers *CalendarHandlers) *Server {
+func NewServer(app i.Application, logger i.Logger, cfg ServerConfig, handlers *Handlers) *Server {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", handlers.helloHandler)

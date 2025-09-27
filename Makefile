@@ -82,3 +82,7 @@ run-sputnik:
 .PHONY: update-sputnik
 update-sputnik:
 	docker pull ghcr.io/dimryb/sputnik:latest
+
+.PHONY: generate-mocks
+generate-mocks:
+	go generate ./...
