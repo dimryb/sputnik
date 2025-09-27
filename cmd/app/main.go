@@ -11,6 +11,7 @@ import (
 	"github.com/dimryb/sputnik/internal/app"
 	"github.com/dimryb/sputnik/internal/config"
 	"github.com/dimryb/sputnik/internal/logger"
+	"github.com/dimryb/sputnik/internal/service"
 )
 
 var configPath string
@@ -39,8 +40,15 @@ func main() {
 	defer cancel()
 
 	logg := logger.New(cfg.Log.Level)
+	application := app.NewApp(ctx, logg)
+	sputnikService := service.NewSputnikService(application, logg, service.SputnikConfig{})
 
-	app.NewApp(ctx, logg).Run()
+	if err = sputnikService.Run(ctx); err != nil {
+		logg.Errorf("Sputnik service stopped with error: %v", err)
+		cancel()
+	} else {
+		logg.Infof("Sputnik service stopped gracefully")
+	}
 
 	<-ctx.Done()
 
