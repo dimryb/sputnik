@@ -4,10 +4,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
 	"os/signal"
 	"syscall"
 
 	"github.com/dimryb/sputnik/internal/app"
+	"github.com/dimryb/sputnik/internal/config"
+	"github.com/dimryb/sputnik/internal/logger"
 )
 
 var configPath string
@@ -26,11 +29,18 @@ func main() {
 		return
 	}
 
+	cfg, err := config.NewConfig(configPath)
+	if err != nil {
+		log.Fatalf("Config error: %s", err)
+	}
+
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	app.NewApp(ctx).Run()
+	logg := logger.New(cfg.Log.Level)
+
+	app.NewApp(ctx, logg).Run()
 
 	<-ctx.Done()
 

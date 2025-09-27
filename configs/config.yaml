@@ -1,0 +1,11 @@
+log:
+  level: 'debug'
+
+http:
+  host: localhost
+  port: 8080
+  readTimeout: "10s"
+  writeTimeout: "10s"
+  idleTimeout: "30s"
+  readHeaderTimeout: "2s"
+

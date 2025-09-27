@@ -9,7 +9,7 @@ import (
 )
 
 type (
-	CalendarConfig struct {
+	Config struct {
 		HTTP `yaml:"http"`
 		Log  `yaml:"log"`
 	}
@@ -40,4 +40,10 @@ func Load(configPath string, target any) error {
 	}
 
 	return nil
+}
+
+func NewConfig(configPath string) (*Config, error) {
+	cfg := &Config{}
+	err := Load(configPath, cfg)
+	return cfg, err
 }
