@@ -31,6 +31,7 @@ func NewServer(app i.Application, logger i.Logger, cfg ServerConfig, handlers *H
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", handlers.helloHandler)
+	mux.HandleFunc("/health", handlers.healthHandler)
 	return &Server{
 		logger: logger,
 		app:    app,

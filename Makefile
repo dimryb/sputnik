@@ -32,7 +32,7 @@ version: build
 
 .PHONY: test
 test:
-	go test -race ./internal/...
+	go test -race ./internal/... -v
 
 .PHONY: install-lint-deps
 install-lint-deps:
