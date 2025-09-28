@@ -18,8 +18,24 @@ sputnik/
 ├── configs/
 │   └── config.yaml
 ├── internal/
-│   └── app/
-│       └── app.go
+│   ├── app/
+│   │   └── app.go
+│   ├── config/
+│   │   └── config.go
+│   ├── interface/
+│   │   ├── application.go
+│   │   └── logger.go
+│   ├── logger/
+│   │   └── logger.go
+│   ├── server/
+│   │   └── http/
+│   │      ├── handlers.go
+│   │      ├── middleware.go
+│   │      └── server.go
+│   └── service/
+│       └── sputnik.go
+├── docker-compose.ci.yml
+├── docker-compose.e2e.yml
 ├── Dockerfile
 ├── Makefile
 ├── go.mod
@@ -68,6 +84,31 @@ App stopped
 
 ---
 
+## Тестирование
+
+### Юнит-тесты
+Запускаются автоматически в CI и локально:
+```bash
+make test
+```
+
+### Интеграционные тесты
+Требуют запущенного сервиса. Запускаются вручную:
+```bash
+make ci-test
+```
+В GitHub Actions — через **ручной запуск workflow** `Integration Tests`.
+
+### Нагрузочное тестирование
+Выполняет 100 запросов к `/health`:
+```bash
+make load-test
+```
+В GitHub Actions — через отдельный workflow **`Load Test`** (ручной запуск).  
+Результаты сохраняются в `reports/load-report.txt` и описаны в `load-test-report.md`.
+
+---
+
 ## Docker-образ
 
 ### 1. Собрать образ
@@ -103,9 +144,14 @@ make push-sputnik
 3. **`build`** — сборка бинарника
 4. **`docker`** — сборка и пуш образа в GHCR
 
+### Ручные этапы:
+- **`Integration Tests`** — интеграционные тесты (`workflow_dispatch`)
+- **`Load Test`** — нагрузочное тестирование (`workflow_dispatch`)
+
+
 ### Скриншот успешного CI/CD
 
-![CI/CD Success](img/img_github_cicd.png)
+![CI/CD Success](img/img_github_cicd_test.png)
 > *Скриншот из GitHub Actions: все шаги прошли без ошибок.*
 
 ---
