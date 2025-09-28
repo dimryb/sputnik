@@ -75,12 +75,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Start services
-        run: docker compose up -d
-
       - name: Run integration tests
         run: make ci-test
-
-      - name: Cleanup
-        if: always()
-        run: docker compose down -v
