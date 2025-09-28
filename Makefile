@@ -86,3 +86,7 @@ update-sputnik:
 .PHONY: generate-mocks
 generate-mocks:
 	go generate ./...
+
+.PHONY: ci-test
+ci-test:
+	docker compose -f docker-compose.ci.yml --profile ci up --abort-on-container-exit --exit-code-from integration-tests

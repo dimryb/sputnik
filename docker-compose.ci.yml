@@ -1,0 +1,43 @@
+# docker-compose.ci.yml
+
+services:
+  sputnik:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: sputnik
+    environment:
+      - CONFIG_FILE=/etc/sputnik/config.yaml
+    volumes:
+      - ./configs:/etc/sputnik:ro
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    profiles:
+      - ci
+
+  integration-tests:
+    image: golang:1.24-alpine
+    container_name: integration-tests
+    depends_on:
+      sputnik:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - SERVICE_URL=http://sputnik:8080
+    command: >
+      sh -c "
+      apk add --no-cache curl git &&
+      cd /app &&
+      go test -v -tags integration ./internal/... ||
+      (echo 'Integration tests failed!' && exit 1)
+      "
+    profiles:
+      - ci
