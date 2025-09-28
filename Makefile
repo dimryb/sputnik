@@ -90,3 +90,7 @@ generate-mocks:
 .PHONY: ci-test
 ci-test:
 	docker compose -f docker-compose.ci.yml --profile ci up --abort-on-container-exit --exit-code-from integration-tests
+
+.PHONY: load-test
+load-test:
+	docker compose -f docker-compose.e2e.yml up --abort-on-container-exit --exit-code-from load-test
