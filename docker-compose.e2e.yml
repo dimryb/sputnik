@@ -1,0 +1,38 @@
+# docker-compose.e2e.yml
+
+services:
+  sputnik:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: sputnik
+    environment:
+      - CONFIG_FILE=/etc/sputnik/config.yaml
+    volumes:
+      - ./configs:/etc/sputnik:ro
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  load-test:
+    image: curlimages/curl:latest
+    container_name: load-test
+    depends_on:
+      sputnik:
+        condition: service_healthy
+    environment:
+      - SERVICE_URL=http://sputnik:8080
+    command: >
+      sh -c "
+      for i in $$(seq 1 100); do
+        time=$$(curl -s -w '%{time_total}' -o /dev/null $${SERVICE_URL}/health)
+        echo \"Request $$i: $${time}s\"
+      done &&
+      echo '::endgroup::' &&
+      echo 'Load test completed successfully.'
+      "

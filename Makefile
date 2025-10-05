@@ -32,7 +32,7 @@ version: build
 
 .PHONY: test
 test:
-	go test -race ./internal/...
+	go test -race ./internal/... -v
 
 .PHONY: install-lint-deps
 install-lint-deps:
@@ -82,3 +82,15 @@ run-sputnik:
 .PHONY: update-sputnik
 update-sputnik:
 	docker pull ghcr.io/dimryb/sputnik:latest
+
+.PHONY: generate-mocks
+generate-mocks:
+	go generate ./...
+
+.PHONY: ci-test
+ci-test:
+	docker compose -f docker-compose.ci.yml --profile ci up --abort-on-container-exit --exit-code-from integration-tests
+
+.PHONY: load-test
+load-test:
+	docker compose -f docker-compose.e2e.yml up --abort-on-container-exit --exit-code-from load-test
